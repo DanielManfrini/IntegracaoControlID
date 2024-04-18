@@ -1,0 +1,3 @@
+cd C:\\Users\\Daniel.lopes\\Documents\\Scripts\\controlidSync2
+C:\\Users\\Daniel.lopes\\Documents\\Scripts\\controlidSync2\\fbexport\\exe\\fbexport -Sc -H 172.10.20.60 -D C:\sip\SIP.gdb -U SYSDBA -P masterkey -F C:\Users\Daniel.lopes\Documents\Scripts\controlidSync2\controlidSync2\funcionario.csv -Q "SELECT CDMATRFUNCIONARIO, NMFUNCIONARIO, PIS, SITAFA FROM FUNCIONARIO WHERE CODFIL=661 AND SITAFA=7"
+cd C:\\Users\\Daniel.lopes\\Documents\\Scripts\\controlidSync2
