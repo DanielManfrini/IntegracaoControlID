@@ -4,6 +4,12 @@
 
 # Importar funções control id
 from controlidAPI import *
+from datetime import datetime
+
+hoje = datetime.today()
+dia = hoje.date()
+
+hoje = dia.strftime('%d/%m/%Y')
 
 def busca_dados_afd(): # Declaramos a função para não reescrever.
 
@@ -59,18 +65,27 @@ for linha in texto:
     if linha != '':
     
         registro = linha[0:10]
+
         data = linha[10:18]
-        hora = linha[18:22]
+        dia = data[0:2]
+        mes = data[2:4]
+        ano = data[4:8]
+        data = dia+'/'+mes+'/'+ano
+
+        tempo = linha[18:22]
+        hora = tempo[0:2]
+        minuto = tempo[2:4]
+        tempo_total = hora+':'+minuto
+
         pis = linha[23:34]
 
-        valores = (registro,data,hora,pis)
-        print('Valores: '+registro,data,hora,pis)
+        valores = (registro,data,tempo_total,pis)
 
         lista_primeira_busca.append(valores)
 
 # Agora partimos para a segunda busca
 
-sleep(120)
+#sleep(120)
 
 lista_segunda_busca = [] # Declaramos a lista para comparar
 
@@ -81,12 +96,23 @@ texto = busca_dados_afd()
 print('Iniciando tratativa de texto')
 for linha in texto:
     if linha != '':
+
         registro = linha[0:10]
+
         data = linha[10:18]
-        hora = linha[18:22]
+        dia = data[0:2]
+        mes = data[2:4]
+        ano = data[4:8]
+        data = dia+'/'+mes+'/'+ano
+
+        tempo = linha[18:22]
+        hora = tempo[0:2]
+        minuto = tempo[2:4]
+        tempo_total = hora+':'+minuto
+
         pis = linha[23:34]
 
-        valores = (registro,data,hora,pis)
+        valores = (registro,data,tempo_total,pis)
 
         lista_segunda_busca.append(valores)
 
@@ -97,13 +123,38 @@ conjunto2 = set(lista_segunda_busca)
 
 elementos_adicionais = list(conjunto2 - conjunto1)
 
-print('Digitais não baixadas na primeira busca!')
-print(elementos_adicionais)
-
 for linha in elementos_adicionais:
 
     lista_primeira_busca.append(linha)
 
+
+# Agora vamos buscar  e separar os pontos por digitais.
+# Vamos criar uma lista nova, e abrir várias tuplas em cada laço
+# o objetivo é que em cada linha do primeiro laço iniciamos um alço novo para buscar
+# o pis correspondente e adicionar os horários na tupla.
+# Assim criamos uma lista com o pis, o dia e as batidas de cada funcionário.
+lista_final = []
+
+for linha_inicial in lista_primeira_busca: # Laço para verificar cada linha.
+
+    pis_inicial = linha_inicial[3]
+    data_inicial = linha_inicial[1]
+
+    tupla_laco = (pis_inicial,data_inicial,)
+
+    for linha_laco in lista_primeira_busca: # Laço para buscar o pis correspondente na lista.
+
+        pis_laco = linha_laco[3]
+        data_laco = linha_laco[1]
+
+        if pis_laco == pis_inicial and data_inicial == data_laco: # se o pis e a data forem iguais vai adicionar o horário a tupla.
+
+            novo_horario = linha_laco[2]
+            tupla_laco = tupla_laco + (novo_horario,)
+
+    lista_final.append(tupla_laco) # no fim de cada laço vai adicionar a tupla na lista nova.
+
+# Agora vamos escrever os dados para debug.
 with open('saida.txt', 'a') as arquivo:
-    for linha in lista_primeira_busca:
+    for linha in lista_final:
         arquivo.write(str(linha)+'\n')
